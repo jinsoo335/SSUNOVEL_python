@@ -12,6 +12,7 @@ class Novel(Base):
 
     novel_idx = Column(BIGINT, nullable=False, autoincrement=True, primary_key=True)
     title = Column(VARCHAR(100), nullable=False)
+    summary = Column(TEXT)
 
 
 class Author(Base):
