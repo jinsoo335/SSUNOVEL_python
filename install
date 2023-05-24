@@ -1,0 +1,4 @@
+pip install jupyter
+pip install tqdm
+pip install selenium
+pip install BeautifulSoup
