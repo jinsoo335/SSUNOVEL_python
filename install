@@ -1,12 +1,14 @@
 pip install jupyter
 pip install tqdm
 pip install selenium
-pip install BeautifulSoup
+pip install beautifulSoup4
 pip install mysql-connector-python
 pip install sqlalchemy
 pip install pymysql
+pip install dotenv
 pip install pandas
 pip install numpy
 pip install scikit-learn
 pip install torch
 pip install sentence_transformers
+pip install konlpy

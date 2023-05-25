@@ -1,4 +1,7 @@
 import sys
+
+from machine_learning.content_based_filtering import summary_based_recommand
+
 sys.path.append("")
 
 import threading
@@ -66,7 +69,28 @@ async def scraping():
 
     return "ok", 200
 
+
+# Depends는 fast api에서 의존성 주입에 사용되는 데코레이터
+# db 변수에 get_db()로 연결하려는 DB에 대한 세션 정보를 주입할 수 있다.
 @app.get('/novel')
 def get_novels(db: Session = Depends(get_db)):
+
+    # Novel model에 대한 객체 리스트 생성
     novels = db.query(Novel).all()
     return novels
+
+
+
+@app.get('/novel/{novel_idx}')
+def get_recommand(novel_idx, db: Session = Depends(get_db)):
+    
+    # Novel model에 대한 객체 리스트 생성
+    novels = db.query(Novel).all()
+
+    # 쿼리 결과를 딕셔너리로 변환
+    novel_dicts = [novel.__dict__ for novel in novels]
+    
+    # 줄거리 기반 추천 호출
+    result = summary_based_recommand(novel_idx, novel_dicts)
+
+    return result
