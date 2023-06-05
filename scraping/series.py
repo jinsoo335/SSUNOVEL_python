@@ -31,7 +31,7 @@ def series_scraping():
     # 옵션 생성
     options = webdriver.ChromeOptions()
     # 창 숨기는 옵션 추가
-    options.add_argument("headless")
+    #options.add_argument("headless")
 
     # 창을 미리 열기, 단 백그라운드에서 돌게 하기
     try:
@@ -39,12 +39,12 @@ def series_scraping():
     except Exception:
         print("webDriver를 못 생성")
 
-    f = open('./scraping_files/series.csv', 'w', encoding="utf-8-sig", newline='')
+    f = open('./scraping_files/naver.csv', 'w', encoding="utf-8-sig", newline='')
     writer = csv.writer(f)
     datas = []
     datas.append(
-        ['title', 'is_complite', 'genre', 'author', 'synopsis', 'price', 'total_episode', 'comment', 'img_link',
-         'novel_link', 'tag'])
+        ['title', 'is_complete', 'genre', 'author', 'synopsis', 'price', 'total_episode', 'comment', 'img_link',
+         'novel_link', 'tags'])
 
     try:
         for i in tqdm(range(start_page, end_page + 1)):
@@ -188,18 +188,18 @@ def series_scraping():
                 except KeyboardInterrupt:
                     raise
                 except:
-                    print(traceback.format_exc())
+                    #print(traceback.format_exc())
                     continue
 
 
     except Exception:
 
         # 제목과 추적용 page 출력
-        print(i)
-        print(title)
+        #print(i)
+        #print(title)
 
         print('에러 뜸')
-        print(traceback.format_exc())
+        #print(traceback.format_exc())
     finally:
         writer.writerows(datas)
         browser.quit()

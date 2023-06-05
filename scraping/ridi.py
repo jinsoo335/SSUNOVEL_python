@@ -17,16 +17,16 @@ def repeat_scroll(driver):
     page_height = driver.execute_script("return document.body.scrollHeight")
 
     # 스크롤을 내릴 높이
-    distance = page_height / 60
+    distance = page_height / 20
 
     # 스크롤 시작 위치
     start = 1
 
     # 스크롤을 내리면서 태그 정보를 가져올 수 있게 하기
     # 1초씩 기다기
-    for i in range(60):
+    for i in range(20):
         driver.execute_script("window.scrollTo(0, {})".format(start))
-        sleep(1)
+        sleep(0.5)
         start += distance
 
 
@@ -35,7 +35,7 @@ def ridi_fantasy_scraping():
     # 옵션 생성
     options = webdriver.ChromeOptions()
     # 창 숨기는 옵션 추가
-    options.add_argument("headless")
+    #options.add_argument("headless")
 
     # 창을 미리 열기, 단 백그라운드에서 돌게 하기
     try:
@@ -47,7 +47,7 @@ def ridi_fantasy_scraping():
     writer = csv.writer(f)
     datas = []
     datas.append(
-        ['title', 'is_complite', 'genre', 'author', 'synopsis', 'price', 'total_episode', 'comment', 'img_link',
+        ['title', 'is_complete', 'genre', 'author', 'synopsis', 'price', 'total_episode', 'comment', 'img_link',
          'novel_link', 'tags'])
 
     # 시작 페이지
@@ -186,7 +186,7 @@ def ridi_rofan_scraping():
     # 옵션 생성
     options = webdriver.ChromeOptions()
     # 창 숨기는 옵션 추가
-    options.add_argument("headless")
+    #options.add_argument("headless")
 
     # 창을 미리 열기, 단 백그라운드에서 돌게 하기
     try:
@@ -199,7 +199,7 @@ def ridi_rofan_scraping():
     writer = csv.writer(f)
     datas = []
     datas.append(
-        ['title', 'is_complite', 'genre', 'author', 'synopsis', 'price', 'total_episode', 'comment', 'img_link',
+        ['title', 'is_complete', 'genre', 'author', 'synopsis', 'price', 'total_episode', 'comment', 'img_link',
          'novel_link', 'tags'])
 
     # 시작 페이지
@@ -339,7 +339,7 @@ def ridi_romance_scraping():
     # 옵션 생성
     options = webdriver.ChromeOptions()
     # 창 숨기는 옵션 추가
-    options.add_argument("headless")
+    #options.add_argument("headless")
 
     # 창을 미리 열기, 단 백그라운드에서 돌게 하기
     try:
@@ -352,7 +352,7 @@ def ridi_romance_scraping():
     writer = csv.writer(f)
     datas = []
     datas.append(
-        ['title', 'is_complite', 'genre', 'author', 'synopsis', 'price', 'total_episode', 'comment', 'img_link',
+        ['title', 'is_complete', 'genre', 'author', 'synopsis', 'price', 'total_episode', 'comment', 'img_link',
          'novel_link', 'tags'])
 
     # 시작 페이지
@@ -468,7 +468,7 @@ def ridi_romance_scraping():
 
 
                 except:
-                    print(traceback.format_exc())
+                    #print(traceback.format_exc())
                     continue
 
 
@@ -478,7 +478,7 @@ def ridi_romance_scraping():
     except Exception:
 
         print('error: ', title, i)
-        print(traceback.format_exc())
+        #print(traceback.format_exc())
 
     finally:
         writer.writerows(datas)

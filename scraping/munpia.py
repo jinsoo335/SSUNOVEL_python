@@ -18,7 +18,7 @@ def munpia_complete_scraping():
     # 옵션 생성
     options = webdriver.ChromeOptions()
     # 창 숨기는 옵션 추가
-    options.add_argument("headless")
+    #options.add_argument("headless")
 
     # 창을 미리 열기, 단 백그라운드에서 돌게 하기
     try:
@@ -31,8 +31,8 @@ def munpia_complete_scraping():
     writer = csv.writer(f)
     datas = []
     datas.append(
-        ['title', 'is_complite', 'genre', 'author', 'synopsis', 'price', 'total_episode', 'comment', 'img_link',
-         'info_link', 'tags'])
+        ['title', 'is_complete', 'genre', 'author', 'synopsis', 'price', 'total_episode', 'comment', 'img_link',
+         'novel_link', 'tags'])
 
     start_page = 1
 
@@ -164,8 +164,8 @@ def munpia_complete_scraping():
                          novel_info_url, tags])
 
                 except Exception:
-                    print('error')
-                    print(traceback.format_exc())
+                    #print('error')
+                    #print(traceback.format_exc())
                     continue
 
 
@@ -186,7 +186,7 @@ def munpia_incomplete_scraping():
     # 옵션 생성
     options = webdriver.ChromeOptions()
     # 창 숨기는 옵션 추가
-    options.add_argument("headless")
+    #options.add_argument("headless")
 
     # 창을 미리 열기, 단 백그라운드에서 돌게 하기
     try:
@@ -199,8 +199,8 @@ def munpia_incomplete_scraping():
     writer = csv.writer(f)
     datas = []
     datas.append(
-        ['title', 'is_complite', 'genre', 'author', 'synopsis', 'price', 'total_episode', 'comment', 'img_link',
-         'info_link', 'tags'])
+        ['title', 'is_complete', 'genre', 'author', 'synopsis', 'price', 'total_episode', 'comment', 'img_link',
+         'novel_link', 'tags'])
 
     start_page = 1
 

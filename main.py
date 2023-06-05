@@ -1,6 +1,7 @@
 import sys
 
 from machine_learning.content_based_filtering import summary_based_recommand
+from scraping.parsing import parsing_and_insert_DB
 
 sys.path.append("")
 
@@ -9,7 +10,7 @@ import threading
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 
-from model import Novel
+from model import Novel, Member
 from scraping.kakao import kakao_scraping
 from scraping.munpia import munpia_scraping
 from scraping.ridi import ridi_scraping
@@ -42,30 +43,33 @@ async def scraping():
     # 누군가 락을 가지고 있다면 대기하지 않고 False 반환
     # 락은 한 스레드내에서 공유한다.
     # 같은 스레드라면, 여러 락을 호출해서 사용할 수 있다.
-    acquire = mutex.acquire(blocking=False)
-
-    if not acquire:
-        return {"message": "Already running."}, 400
-
-    try:
-        thread_ridi = threading.Thread(target=ridi_scraping)
-        thread_munpia = threading.Thread(target=munpia_scraping)
-        thread_kakao = threading.Thread(target=kakao_scraping)
-        thread_series = threading.Thread(target=series_scraping)
-
-        thread_ridi.start()
-        thread_munpia.start()
-        thread_kakao.start()
-        thread_series.start()
-
-        thread_ridi.join()
-        thread_munpia.join()
-        thread_kakao.join()
-        thread_series.join()
+    ridi_scraping()
 
 
-    finally:
-        mutex.release()
+    # acquire = mutex.acquire(blocking=False)
+    #
+    # if not acquire:
+    #     return {"message": "Already running."}, 400
+    #
+    # try:
+    #     thread_ridi = threading.Thread(target=ridi_scraping)
+    #     thread_munpia = threading.Thread(target=munpia_scraping)
+    #     thread_kakao = threading.Thread(target=kakao_scraping)
+    #     thread_series = threading.Thread(target=series_scraping)
+    #
+    #     thread_ridi.start()
+    #     thread_munpia.start()
+    #     thread_kakao.start()
+    #     thread_series.start()
+    #
+    #     thread_ridi.join()
+    #     thread_munpia.join()
+    #     thread_kakao.join()
+    #     thread_series.join()
+    #
+    #
+    # finally:
+    #     mutex.release()
 
     return "ok", 200
 
@@ -78,6 +82,8 @@ def get_novels(db: Session = Depends(get_db)):
     # Novel model에 대한 객체 리스트 생성
     novels = db.query(Novel).all()
     return novels
+
+
 
 
 
