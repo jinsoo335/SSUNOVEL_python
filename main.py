@@ -52,6 +52,7 @@ async def scraping():
     # 누군가 락을 가지고 있다면 대기하지 않고 False 반환
     # 락은 한 스레드내에서 공유한다.
     # 같은 스레드라면, 여러 락을 호출해서 사용할 수 있다.
+    
     ridi_scraping()
     kakao_scraping()
     munpia_scraping()
@@ -109,7 +110,7 @@ async def scraping():
 
 
 
-    return "ok", 200
+    return "ok"
 
 # Depends는 fast api에서 의존성 주입에 사용되는 데코레이터
 # db 변수에 get_db()로 연결하려는 DB에 대한 세션 정보를 주입할 수 있다.
