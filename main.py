@@ -1,7 +1,7 @@
 import sys
 
-from machine_learning.content_based_filtering import summary_based_recommand
-from scraping.parsing import parsing_and_insert_DB
+#from machine_learning.content_based_filtering import summary_based_recommand
+#from scraping.parsing import parsing_and_insert_DB
 
 sys.path.append("")
 
@@ -34,6 +34,9 @@ def get_db():
     finally:
         db.close()
 
+@app.get("/")
+def root():
+    return "파이썬 서버 메인"
 
 
 @app.get("/scraping")
@@ -44,6 +47,9 @@ async def scraping():
     # 락은 한 스레드내에서 공유한다.
     # 같은 스레드라면, 여러 락을 호출해서 사용할 수 있다.
     ridi_scraping()
+    kakao_scraping()
+    munpia_scraping()
+    series_scraping()
 
 
     # acquire = mutex.acquire(blocking=False)
@@ -51,27 +57,27 @@ async def scraping():
     # if not acquire:
     #     return {"message": "Already running."}, 400
     #
-    # try:
-    #     thread_ridi = threading.Thread(target=ridi_scraping)
-    #     thread_munpia = threading.Thread(target=munpia_scraping)
-    #     thread_kakao = threading.Thread(target=kakao_scraping)
-    #     thread_series = threading.Thread(target=series_scraping)
+    #try:
+    #        thread_ridi = threading.Thread(target=ridi_scraping)
+    #        thread_munpia = threading.Thread(target=munpia_scraping)
+    #        thread_kakao = threading.Thread(target=kakao_scraping)
+    #        thread_series = threading.Thread(target=series_scraping)
+    
+    #        thread_ridi.start()
+    #        thread_munpia.start()
+    #        thread_kakao.start()
+    #        thread_series.start()
     #
-    #     thread_ridi.start()
-    #     thread_munpia.start()
-    #     thread_kakao.start()
-    #     thread_series.start()
-    #
-    #     thread_ridi.join()
-    #     thread_munpia.join()
-    #     thread_kakao.join()
-    #     thread_series.join()
-    #
-    #
-    # finally:
-    #     mutex.release()
+    #        thread_ridi.join()
+    #        thread_munpia.join()
+    #        thread_kakao.join()
+    #        thread_series.join()
+    
+    
+    #finally:
+    #      mutex.release()
 
-    return "ok", 200
+    return "크롤링 성공"
 
 
 # Depends는 fast api에서 의존성 주입에 사용되는 데코레이터
@@ -100,3 +106,5 @@ def get_recommand(novel_idx, db: Session = Depends(get_db)):
     result = summary_based_recommand(novel_idx, novel_dicts)
 
     return result
+
+
