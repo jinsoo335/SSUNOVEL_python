@@ -109,7 +109,7 @@ async def scraping():
 
 
 
-    return "ok", 200
+    return "ok"
 
 # Depends는 fast api에서 의존성 주입에 사용되는 데코레이터
 # db 변수에 get_db()로 연결하려는 DB에 대한 세션 정보를 주입할 수 있다.
