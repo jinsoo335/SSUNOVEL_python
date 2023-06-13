@@ -1,4 +1,9 @@
+import csv
 import sys
+from os import environ
+from dotenv import load_dotenv
+import boto3
+import pandas as pd
 
 from machine_learning.content_based_filtering import summary_based_recommand
 from scraping.parsing import parsing_and_insert_DB
@@ -100,3 +105,45 @@ def get_recommand(novel_idx, db: Session = Depends(get_db)):
     result = summary_based_recommand(novel_idx, novel_dicts)
 
     return result
+
+
+def s3_connection():
+    load_dotenv()
+    try:
+        # s3 클라이언트 생성
+        s3 = boto3.client(
+            service_name="s3",
+            region_name="ap-northeast-2",
+            aws_access_key_id="{}".format(environ['S3_ACCESS_KEY']),
+            aws_secret_access_key="{}".format(environ['S3_SECRET_ACCESS_KEY']),
+        )
+    except Exception as e:
+        print(e)
+    else:
+        print("s3 bucket connected!")
+        return s3
+
+
+@app.get('/test/s3')
+async def get():
+    f = open("test.csv", 'w', encoding='utf-8')
+
+    df = pd.DataFrame()
+
+    df['test_column'] = [1, 2, 3, 4, 5]
+
+    writer = csv.writer(f)
+
+    writer.writerows(df)
+    f.close()
+
+    s3 = s3_connection()
+
+    try:
+        local_filename = 'test.csv'     # 로컬에 있는 파일 이름
+        bucket_name = 'novelforumbucket'
+        bucket_filename = local_filename    # 버킷에 저장할 파일 이름
+
+        s3.upload_file(local_filename, bucket_name, bucket_filename)
+    except Exception as e:
+        print(e)
