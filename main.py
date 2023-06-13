@@ -1,8 +1,14 @@
+import csv
 import sys
 
-#from machine_learning.content_based_filtering import summary_based_recommand
-#from scraping.parsing import parsing_and_insert_DB
+from os import environ
+from os import path
+from dotenv import load_dotenv
+import boto3
+import pandas as pd
 
+from machine_learning.content_based_filtering import summary_based_recommand
+from scraping.parsing import parsing_and_insert_DB
 sys.path.append("")
 
 import threading
@@ -51,7 +57,6 @@ async def scraping():
     munpia_scraping()
     series_scraping()
 
-
     # acquire = mutex.acquire(blocking=False)
     #
     # if not acquire:
@@ -77,8 +82,34 @@ async def scraping():
     #finally:
     #      mutex.release()
 
-    return "크롤링 성공"
+    # 스크래핑 끝나고 해당 파일을 S3에 올리기
+    s3 = s3_connection()
 
+    try:
+        filepath = './scraping_files/'
+        filenames = ['kakao.csv', 'naver.csv', 'ridi0.csv', 'ridi1.csv', 'ridi2.csv', 'munpia0.csv', 'munpia1.csv']
+
+        for filename in filenames:
+            try:
+                # 파일이 존재하고, 파일 사이즈가 0보다 크면, 업로드
+                if path.isfile(filepath + filename) and path.getsize(filepath + filename) > 0:
+
+                    local_filename = filepath + filename     # 로컬에 있는 파일 이름
+                    bucket_name = 'novelforumbucket'
+                    bucket_filename = filename    # 버킷에 저장할 파일 이름
+
+                    s3.upload_file(local_filename, bucket_name, bucket_filename)
+                else:
+                    print(filename, path.getsize(filepath + filename))
+
+            except Exception as e:
+                continue
+    except Exception as e:
+        print(e)
+
+
+
+    return "ok", 200
 
 # Depends는 fast api에서 의존성 주입에 사용되는 데코레이터
 # db 변수에 get_db()로 연결하려는 DB에 대한 세션 정보를 주입할 수 있다.
@@ -108,3 +139,18 @@ def get_recommand(novel_idx, db: Session = Depends(get_db)):
     return result
 
 
+def s3_connection():
+    load_dotenv()
+    try:
+        # s3 클라이언트 생성
+        s3 = boto3.client(
+            service_name="s3",
+            region_name="ap-northeast-2",
+            aws_access_key_id="{}".format(environ['S3_ACCESS_KEY']),
+            aws_secret_access_key="{}".format(environ['S3_SECRET_ACCESS_KEY']),
+        )
+    except Exception as e:
+        print(e)
+    else:
+        print("s3 bucket connected!")
+        return s3
