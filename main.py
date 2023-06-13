@@ -58,6 +58,8 @@ async def scraping():
     munpia_scraping()
     series_scraping()
 
+
+
     # acquire = mutex.acquire(blocking=False)
     #
     # if not acquire:
@@ -109,8 +111,7 @@ async def scraping():
         print(e)
 
 
-
-    return "ok"
+    return 'ok'
 
 # Depends는 fast api에서 의존성 주입에 사용되는 데코레이터
 # db 변수에 get_db()로 연결하려는 DB에 대한 세션 정보를 주입할 수 있다.
@@ -125,17 +126,19 @@ def get_novels(db: Session = Depends(get_db)):
 
 
 
-@app.get('/novel/{novel_idx}')
-def get_recommand(novel_idx, db: Session = Depends(get_db)):
+@app.get('/summary-recommend')
+def get_recommand(db: Session = Depends(get_db)):
     
     # Novel model에 대한 객체 리스트 생성
     novels = db.query(Novel).all()
 
     # 쿼리 결과를 딕셔너리로 변환
     novel_dicts = [novel.__dict__ for novel in novels]
-    
+
+    print("DB에서 소설 정보 가져오기 성공")
+
     # 줄거리 기반 추천 호출
-    result = summary_based_recommand(novel_idx, novel_dicts)
+    result = summary_based_recommand(novel_dicts)
 
     return result
 
