@@ -1,5 +1,4 @@
 import csv
-import datatable as dt
 import pandas as pd
 from sqlalchemy.orm import Session
 import tqdm
