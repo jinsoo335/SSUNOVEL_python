@@ -3,5 +3,5 @@ from scraping.kakao_present import kakao_present
 
 
 def kakao_scraping():
-    kakao_new()
+    #kakao_new()
     kakao_present()

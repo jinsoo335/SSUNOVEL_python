@@ -16,7 +16,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 # 브라우저 꺼짐 방지
 chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
-#chrome_options.add_argument("headless") #백그라운드에서 작업
+chrome_options.add_argument("headless") #백그라운드에서 작업
 # 드라이버 생성 및 열기
 service = Service(executable_path=ChromeDriverManager().install())
 

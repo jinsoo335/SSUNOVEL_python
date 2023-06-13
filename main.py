@@ -9,7 +9,6 @@ import pandas as pd
 
 from machine_learning.content_based_filtering import summary_based_recommand
 from scraping.parsing import parsing_and_insert_DB
-
 sys.path.append("")
 
 import threading
@@ -41,6 +40,9 @@ def get_db():
     finally:
         db.close()
 
+@app.get("/")
+def root():
+    return "파이썬 서버 메인"
 
 
 @app.get("/scraping")
@@ -50,34 +52,35 @@ async def scraping():
     # 누군가 락을 가지고 있다면 대기하지 않고 False 반환
     # 락은 한 스레드내에서 공유한다.
     # 같은 스레드라면, 여러 락을 호출해서 사용할 수 있다.
-    #ridi_scraping()
-
+    ridi_scraping()
+    kakao_scraping()
+    munpia_scraping()
+    series_scraping()
 
     # acquire = mutex.acquire(blocking=False)
     #
     # if not acquire:
     #     return {"message": "Already running."}, 400
     #
-    # try:
-    #     thread_ridi = threading.Thread(target=ridi_scraping)
-    #     thread_munpia = threading.Thread(target=munpia_scraping)
-    #     thread_kakao = threading.Thread(target=kakao_scraping)
-    #     thread_series = threading.Thread(target=series_scraping)
+    #try:
+    #        thread_ridi = threading.Thread(target=ridi_scraping)
+    #        thread_munpia = threading.Thread(target=munpia_scraping)
+    #        thread_kakao = threading.Thread(target=kakao_scraping)
+    #        thread_series = threading.Thread(target=series_scraping)
+    
+    #        thread_ridi.start()
+    #        thread_munpia.start()
+    #        thread_kakao.start()
+    #        thread_series.start()
     #
-    #     thread_ridi.start()
-    #     thread_munpia.start()
-    #     thread_kakao.start()
-    #     thread_series.start()
-    #
-    #     thread_ridi.join()
-    #     thread_munpia.join()
-    #     thread_kakao.join()
-    #     thread_series.join()
-    #
-    #
-    # finally:
-    #     mutex.release()
-
+    #        thread_ridi.join()
+    #        thread_munpia.join()
+    #        thread_kakao.join()
+    #        thread_series.join()
+    
+    
+    #finally:
+    #      mutex.release()
 
     # 스크래핑 끝나고 해당 파일을 S3에 올리기
     s3 = s3_connection()
@@ -107,7 +110,6 @@ async def scraping():
 
 
     return "ok", 200
-
 
 # Depends는 fast api에서 의존성 주입에 사용되는 데코레이터
 # db 변수에 get_db()로 연결하려는 DB에 대한 세션 정보를 주입할 수 있다.
@@ -152,4 +154,3 @@ def s3_connection():
     else:
         print("s3 bucket connected!")
         return s3
-
