@@ -3,12 +3,24 @@ from bs4 import BeautifulSoup
 from time import sleep
 import csv
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.common.exceptions import NoSuchAttributeException
 from selenium.webdriver.common.by import By
 import re
 from tqdm.notebook import tqdm
 import traceback
+
+# 크롬 드라이버 자동 업데이트
+from webdriver_manager.chrome import ChromeDriverManager
+
+# 브라우저 꺼짐 방지
+chrome_options = Options()
+chrome_options.add_experimental_option("detach", True)
+chrome_options.add_argument("headless") #백그라운드에서 작업
+# 드라이버 생성 및 열기
+service = Service(executable_path=ChromeDriverManager().install())
 
 
 # title         :       제목            string 타입         error나거나 비어있으면 ""
@@ -29,13 +41,13 @@ def series_scraping():
     sleep_time = 1
 
     # 옵션 생성
-    options = webdriver.ChromeOptions()
+    #options = webdriver.ChromeOptions()
     # 창 숨기는 옵션 추가
     #options.add_argument("headless")
 
     # 창을 미리 열기, 단 백그라운드에서 돌게 하기
     try:
-        browser = webdriver.Chrome(options=options)
+        browser = webdriver.Chrome(service=service, options=chrome_options)
     except Exception:
         print("webDriver를 못 생성")
 

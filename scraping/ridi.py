@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 from time import sleep
 import csv
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver import ActionChains
 from selenium.common.exceptions import InvalidSelectorException
@@ -11,6 +13,16 @@ from selenium.webdriver.common.by import By
 import re
 from tqdm.notebook import tqdm
 import traceback
+
+# 크롬 드라이버 자동 업데이트
+from webdriver_manager.chrome import ChromeDriverManager
+
+# 브라우저 꺼짐 방지
+chrome_options = Options()
+chrome_options.add_experimental_option("detach", True)
+chrome_options.add_argument("headless") #백그라운드에서 작업
+# 드라이버 생성 및 열기
+service = Service(executable_path=ChromeDriverManager().install())
 
 def repeat_scroll(driver):
     # 페이지 전체 높이
@@ -32,14 +44,9 @@ def repeat_scroll(driver):
 
 def ridi_fantasy_scraping():
 
-    # 옵션 생성
-    options = webdriver.ChromeOptions()
-    # 창 숨기는 옵션 추가
-    #options.add_argument("headless")
-
     # 창을 미리 열기, 단 백그라운드에서 돌게 하기
     try:
-        driver = webdriver.Chrome(options=options)
+        driver = webdriver.Chrome(service=service, options=chrome_options)
     except Exception:
         print("webDriver를 못 생성")
 
@@ -184,13 +191,13 @@ def ridi_fantasy_scraping():
 def ridi_rofan_scraping():
 
     # 옵션 생성
-    options = webdriver.ChromeOptions()
+    #options = webdriver.ChromeOptions()
     # 창 숨기는 옵션 추가
     #options.add_argument("headless")
 
     # 창을 미리 열기, 단 백그라운드에서 돌게 하기
     try:
-        driver = webdriver.Chrome(options=options)
+        driver = webdriver.Chrome(service=service, options=chrome_options)
     except Exception:
         print("webDriver를 못 생성")
 
@@ -337,13 +344,13 @@ def ridi_rofan_scraping():
 def ridi_romance_scraping():
 
     # 옵션 생성
-    options = webdriver.ChromeOptions()
+    #options = webdriver.ChromeOptions()
     # 창 숨기는 옵션 추가
     #options.add_argument("headless")
 
     # 창을 미리 열기, 단 백그라운드에서 돌게 하기
     try:
-        driver = webdriver.Chrome(options=options)
+        driver = webdriver.Chrome(service=service, options=chrome_options)
     except Exception:
         print("webDriver를 못 생성")
 
