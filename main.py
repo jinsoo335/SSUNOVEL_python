@@ -1,6 +1,8 @@
 import csv
 import sys
+
 from os import environ
+from os import path
 from dotenv import load_dotenv
 import boto3
 import pandas as pd
@@ -48,7 +50,7 @@ async def scraping():
     # 누군가 락을 가지고 있다면 대기하지 않고 False 반환
     # 락은 한 스레드내에서 공유한다.
     # 같은 스레드라면, 여러 락을 호출해서 사용할 수 있다.
-    ridi_scraping()
+    #ridi_scraping()
 
 
     # acquire = mutex.acquire(blocking=False)
@@ -75,6 +77,34 @@ async def scraping():
     #
     # finally:
     #     mutex.release()
+
+
+    # 스크래핑 끝나고 해당 파일을 S3에 올리기
+    s3 = s3_connection()
+
+    try:
+        filepath = './scraping_files/'
+        filenames = ['kakao.csv', 'naver.csv', 'ridi0.csv', 'ridi1.csv', 'ridi2.csv', 'munpia0.csv', 'munpia1.csv']
+
+        for filename in filenames:
+            try:
+                # 파일이 존재하고, 파일 사이즈가 0보다 크면, 업로드
+                if path.isfile(filepath + filename) and path.getsize(filepath + filename) > 0:
+
+                    local_filename = filepath + filename     # 로컬에 있는 파일 이름
+                    bucket_name = 'novelforumbucket'
+                    bucket_filename = filename    # 버킷에 저장할 파일 이름
+
+                    s3.upload_file(local_filename, bucket_name, bucket_filename)
+                else:
+                    print(filename, path.getsize(filepath + filename))
+
+            except Exception as e:
+                continue
+    except Exception as e:
+        print(e)
+
+
 
     return "ok", 200
 
@@ -123,27 +153,3 @@ def s3_connection():
         print("s3 bucket connected!")
         return s3
 
-
-@app.get('/test/s3')
-async def get():
-    f = open("test.csv", 'w', encoding='utf-8')
-
-    df = pd.DataFrame()
-
-    df['test_column'] = [1, 2, 3, 4, 5]
-
-    writer = csv.writer(f)
-
-    writer.writerows(df)
-    f.close()
-
-    s3 = s3_connection()
-
-    try:
-        local_filename = 'test.csv'     # 로컬에 있는 파일 이름
-        bucket_name = 'novelforumbucket'
-        bucket_filename = local_filename    # 버킷에 저장할 파일 이름
-
-        s3.upload_file(local_filename, bucket_name, bucket_filename)
-    except Exception as e:
-        print(e)
