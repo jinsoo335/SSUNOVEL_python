@@ -3,6 +3,8 @@ import sys
 
 from os import environ
 from os import path
+
+import uvicorn
 from dotenv import load_dotenv
 import boto3
 import pandas as pd
@@ -23,14 +25,13 @@ from scraping.ridi import ridi_scraping
 from scraping.series import series_scraping
 
 from session import SessionLocal
-
+import httpx
 
 
 app = FastAPI()
 
 
 mutex = threading.Lock()
-
 
 
 def get_db():
@@ -110,6 +111,9 @@ async def scraping():
     except Exception as e:
         print(e)
 
+    # 스크래핑 + S3 업로드 이후 완료를 알릴 목적으로 api 호출
+    async with httpx.AsyncClient() as client:
+        response = await client.get("https://www.novelforum.site/parsing")
 
     return 'ok'
 
