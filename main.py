@@ -10,6 +10,7 @@ import boto3
 import pandas as pd
 
 from machine_learning.content_based_filtering import summary_based_recommand
+from machine_learning.novelRecommend import recommendation
 from scraping.parsing import parsing_and_insert_DB
 sys.path.append("")
 
@@ -44,6 +45,13 @@ def get_db():
 @app.get("/")
 def root():
     return "파이썬 서버 메인"
+
+
+@app.get('/novel/recommend/{user_id}')
+def recommend(user_id: int):
+    print("추천 대상 아이디:", user_id)
+    result = recommendation(user_id)
+    return {"novel_id": result}
 
 
 @app.get("/scraping")
