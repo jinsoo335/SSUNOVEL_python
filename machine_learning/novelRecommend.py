@@ -46,7 +46,7 @@ def recommend_novel_using_surprise(model, userId, unread_novels, top_n=10):
     # sortkey_est() 반환값의 내림 차순으로 정렬 수행하고 top_n개의 최상위 값 추출.
     predictions.sort(key=sort_est, reverse=True)
     top_predictions = predictions[:top_n]
-    print(top_predictions)
+    #print(top_predictions)
 
     # top_n으로 추출된 영화의 정보 추출, 영화 아이디, 추천 예상 평점
     top_book_ids = [int(pred.iid) for pred in top_predictions]
@@ -70,13 +70,12 @@ def loadDummyData(engine, user_id):  # 더미데이터를 이용한 추천 시�
 
     dummy = pd.read_sql("select user_idx, novel_idx, rating from ridi", engine)  # Load Dummy Data;
     dummy = dummy.groupby('user_idx').filter(lambda x: len(x) >= 5)
-    print("dummy len is : ", len(dummy))
     result = pd.concat([info,dummy])
-    print(result)
+
     return result
 
 
-# review 테이블 가져오기 -> 정제가 필요함.
+# review 테이블 가져오기 -> 정제가 필요함. 추후 수정 작업 진행할 예정..
 def loadData(engine):
     return pd.read_sql("select member_idx as user_idx, novel_idx, rating from review ", engine)
 
@@ -116,11 +115,12 @@ def recommendation(user_id: int):
     unread_novels = get_unread_novel(df, user_id)
 
     # 추천 받은 novel_id 저장
-    recommend = recommend_novel_using_surprise(model, 9, unread_novels)
+    recommend = recommend_novel_using_surprise(model, user_id, unread_novels)
     recommend_id = [r[0] for r in recommend]
 
     # print(recommend_id) #추천 받은 id 출력
 
     engine.dispose()  # db 연결 해제
+    print('추천 리스트 : ', recommend_id)
 
     return recommend_id  # 추천하는 소설 id 리턴
