@@ -75,9 +75,12 @@ def loadDummyData(engine, user_id):  # 더미데이터를 이용한 추천 시�
     return result
 
 
-# review 테이블 가져오기 -> 정제가 필요함. 추후 수정 작업 진행할 예정..
+# review 테이블 가져오기
 def loadData(engine):
-    return pd.read_sql("select member_idx as user_idx, novel_idx, rating from review ", engine)
+    data = pd.read_sql("select member_idx as user_idx, novel_idx, rating from review ", engine)
+    data = data.groupby('novel_idx').filter(lambda x: len(x) >= 10) #리뷰가 10개 미만인 영화는 삭제
+    data = data.groupby('user_idx').filter(lambda x : len(x) >= 5) #리뷰가 10개 미만인 유저는 삭제
+    return data
 
 
 def recommendation(user_id: int):
@@ -109,7 +112,7 @@ def recommendation(user_id: int):
     trainset = data.build_full_trainset()  # 모든 데이터를 학습용으로 쓴다.
 
     # SVD를 이용한 학습진행.
-    model = SVD()
+    model = SVD(n_factors=160, n_epochs = 50, lr_all = 0.005, reg_all = 0.1)
     model.fit(trainset)
 
     unread_novels = get_unread_novel(df, user_id)
