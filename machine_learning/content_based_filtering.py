@@ -121,8 +121,8 @@ def summary_based_recommand(novel_dict):
     # SentenceTransformer 라이브러리를 사용하여 미리 훈련된 KR - SBERT 모델을 로드
     # 사전 훈련된 가중치를 가져와 모델을 사용할 수 있도록 준비하는 역할
     # 이미 학습된 모델을 로드하여 활용
-    embedder = SentenceTransformer('snunlp/KR-SBERT-V40K-klueNLI-augSTS')
-    # model = SentenceTransformer('jhgan/ko-sroberta-multitask')
+    #embedder = SentenceTransformer('snunlp/KR-SBERT-V40K-klueNLI-augSTS')
+    embedder = SentenceTransformer('jhgan/ko-sroberta-multitask')
 
     # dataframe을 리스트로 변환 (문장 리스트여야 한다.)
     df['combine'] = df['summary'] + '. ' + df['title'] + '.'
